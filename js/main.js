@@ -5,6 +5,6 @@ document.addEventListener('DOMContentLoaded', function(){
     el.setAttribute(attr, attrProperty)
   }//gets the element. changes attribute, Style in the case of css.
 
-  changeAttr('#draw', 'style', 'color:red;')
+  // changeAttr('#draw', 'style', 'color:red;') EXAMPLE CODE USAGE
 
 }, false);
