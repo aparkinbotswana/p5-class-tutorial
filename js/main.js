@@ -1,5 +1,3 @@
-document.addEventListener('DOMContentLoaded', function(){
-
 
 var circles = [];
 var velocityScale = 1;
@@ -144,6 +142,3 @@ var draw = function(){
   // );
 
 };
-
-    
-}, false);
