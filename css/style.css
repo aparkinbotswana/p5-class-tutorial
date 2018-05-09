@@ -1,6 +1,18 @@
-.container{display: flex;}
-.flex1{flex: 1;}
-.flex2{flex: 2;}
-.flex3{flex: 3;}
-.display-none{display: none;}
-.invisible{visibility: hidden;}
+body {
+  padding: 0;
+  margin: 0;
+}
+#content{
+  position: absolute;
+  top: 100px;
+  left: 0;
+  right: 0;
+  font-family: Helvetica;
+  letter-spacing: 1px;
+  font-size: 11pt;
+  color: #ffffff;
+  padding: 20px;
+  background-color: rgba(200, 200, 200, 0.2);
+  width: 50%;
+  margin: 0 auto;
+}
