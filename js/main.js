@@ -1,94 +1,145 @@
-
-var circles = [];
-var velocityScale = 1
+let circles = [];
+let blinks = [];
+let trails = [];
+let kaleidoscopes = [];
+let currentGraphic = 0
 
 var setup = function () {
 
   createCanvas(windowWidth, windowHeight); // window.innerWidth
   background(0); // black background; could also use RGB: background(0, 0, 0);
   colorMode(HSB, 255); // Use Hue Saturation Brightness, with a range of 0-255 for each
-
   noStroke(); // Don't draw a border on shapes  
-  textSize(24);  // If you want to use text()
+  textSize(24); // If you want to use text()
   // blendMode(LIGHTEST);
 }; // setup function sets up the initial properties of our canvas
 
 var draw = function () {
-
   background(0) // resets background colour to black at each frame.
+  //following if statement switches between different graphics
+  if (currentGraphic === 2) {
+    if (mouseIsPressed) {
+      const blink = {
+        velocityScale: 1,
+        velocityX: random(-10, 10),
+        velocityY: random(-10, 10),
+        x: mouseX,
+        y: mouseY,
+        hue: map(mouseX, 0, windowWidth, 0, 255),
+        bright: 255
+      };
+      blinks.push(blink);
+    }
+  } // creating an object for blinking circles bouncing around the screen
+  else if (currentGraphic === 1) {
+    if (mouseIsPressed) {
+      const circle = {
+        velocityScale: 1,
+        velocityX: random(-10, 10),
+        velocityY: random(-10, 10),
+        x: mouseX,
+        y: mouseY,
+        hue: map(mouseX, 0, windowWidth, 0, 255),
+        bright: 255
+      };
+      circles.push(circle);
+    }
+  } // creating an object for circles flying around and off the screen
+  else if (currentGraphic === 0) {
+    if (mouseIsPressed) {
+      const trail = {
+        velocityScale: 1,
+        velocityX: random(-10, 10),
+        velocityY: random(-10, 10),
+        x: mouseX,
+        y: mouseY,
+        hue: map(mouseX, 0, windowWidth, 0, 255),
+        bright: 255
+      };
+      trails.push(trail);
+    }
+  } // creating an object for trail of circles
+  else if (currentGraphic === 3) {
+    if (mouseIsPressed) {
+      const kaleidoscope = {
+        velocityScale: 1,
+        velocityX: random(-10, 10),
+        velocityY: random(-10, 10),
+        x: mouseX,
+        y: mouseY,
+        hue: map(mouseX, 0, windowWidth, 0, 255),
+        bright: 255
+      };
+      kaleidoscopes.push(kaleidoscope);
+    }
+  }
 
-  // ellipse(windowWidth/2, windowHeight/2, 80, 80);
-  // rect(mouseX, mouseY, 80, 80);
-  // text('p5 is cool', 100, 200)
+  for (let i = 0; i < blinks.length; i++) {
+    const b = blinks[i];
 
-  // fill(250, 250, 150)
+    b.x += b.velocityX * b.velocityScale;
+    b.y += b.velocityY * b.velocityScale;
 
+    if (b.x >= windowWidth || b.x <= 0) {
+      b.velocityX *= -1;
+    }
+    if (b.y >= windowHeight || b.y <= 0) {
+      b.velocityY *= -1;
+    }
 
+    fill(b.hue, 155, b.bright);
+    ellipse(b.x, b.y, random(80), random(80));
 
-  // if (keyIsDown(SHIFT) || mouseIsPressed) {
-  //   ellipse(mouseX, mouseY, 80, 80)
-  //   // rect(mouseX, mouseY, 80, 80);
-
-  //   fill(random(250), 150, 250)
-  // } // First example showing how we can pass random values to get awesome effects
-
-
-  // if (keyIsDown(SHIFT) || mouseIsPressed) {
-  //   var hue = map(mouseX, 0, windowWidth, 0, 255)
-  //   ellipse(mouseX, mouseY, 50, 50)
-  //   stroke(hue, 255, 255)
-  //   line(mouseX, mouseY, mouseX + 200, mouseY + 200)
-  // } // Second Example showing how we can use positions in the viewport as values for effects
-
-  // if (keyIsDown(SHIFT) || mouseIsPressed) {
-  //   var height = random(50, 50)
-  //   var width = random(50, 50)
-
-  //   triangle(
-  //     mouseX, mouseY,
-  //     mouseX - width, mouseY + height,
-  //     mouseX + width, mouseY + height
-  //   )
-
-  //   var size = random(50, 50)
-
-  //   ellipse(random(windowWidth), random(windowHeight), size, size)
-  // } // Third (shitty) Example showing random values
-
-
-  if (keyIsDown(SHIFT) || mouseIsPressed) {
-    var hue = map(mouseX, 0, windowWidth, 0, 255)
-
-
-    var circle = {
-      velocityX: random(-10, 10),
-      velocityY: random(-10, 10),
-      x: mouseX,
-      y: mouseY,
-      hue: hue,
-      bright: 255
-    };
-
-    circles.push(circle)
-  } // fourth (awesome) example bringing it all in for an awesome graphic. HAPPY DAYS
+  } // blinking circles bouncing around the screen having the position updated every frame
 
   for (let i = 0; i < circles.length; i++) {
-    var c = circles[i]
-
-    c.x += c.velocityX * velocityScale
-    c.y += c.velocityY * velocityScale
+    const c = circles[i];
 
     if (c.x >= windowWidth || c.x <= 0) {
-      c.velocityX *= -1
+      c.velocityX *= -1;
     }
     if (c.y >= windowHeight || c.y <= 0) {
-      c.velocityY *= -1
+      c.velocityY *= -1;
     }
 
-    // c.bright--
-    fill(c.hue, 155, c.bright)
-    ellipse(c.x, c.y, random(80), random(80))
-    // text('p5 is cool', c.x, c.y)
+    c.x += c.velocityX * c.velocityScale;
+    c.y += c.velocityY * c.velocityScale;
+    fill((c.x / (windowWidth / 255)), 155, c.bright);
+    ellipse(c.x, c.y, 80, 80);
+  } // regular circles flying around the screen having their positions/colour updated every frame
 
-  } // Fourth Example
+  for (let i = 0; i < trails.length; i++) {
+    const t = trails[i];
+    
+
+    t.x = mouseX + (i * 5);
+    t.y = mouseY + (i * 5);
+    fill((t.x / (windowWidth / 255)), 155, t.bright);
+    ellipse(t.x, t.y, 80, 80);
+  }
+
+  for (let i = 0; i < kaleidoscopes.length; i++) {
+    const k = kaleidoscopes[i];
+
+    fill((k.x / (windowWidth / 255)), 155, k.bright);
+    ellipse(k.x, k.y, 80, 80);
+  } // regular circles flying around the screen having their positions/colour updated every frame
 } //draw function called at every frame.
+  
+var keyPressed = function() {
+  if (keyCode === SHIFT) {
+    circles = [];
+    blinks = [];
+    trails = [];
+    kaleidoscopes = [];
+  } // Clears screen of everything.
+
+  if (keyCode === ENTER) {
+    if (currentGraphic != 3) {
+      currentGraphic++;
+    } else {
+      currentGraphic = 0;
+    } // Switches between available graphics.
+  }
+} 
+
