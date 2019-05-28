@@ -1,6 +1,9 @@
 let circles = [];
 let blinks = [];
-let trails = [];
+let trail = {
+  coordinates: [],
+  properties: []
+};
 let kaleidoscopes = [];
 let currentGraphic = 0
 
@@ -11,10 +14,10 @@ var setup = function () {
   colorMode(HSB, 255); // Use Hue Saturation Brightness, with a range of 0-255 for each
   noStroke(); // Don't draw a border on shapes  
   textSize(24); // If you want to use text()
-  // blendMode(LIGHTEST);
 }; // setup function sets up the initial properties of our canvas
 
 var draw = function () {
+
   background(0) // resets background colour to black at each frame.
   //following if statement switches between different graphics
   if (currentGraphic === 2) {
@@ -25,7 +28,7 @@ var draw = function () {
         velocityY: random(-10, 10),
         x: mouseX,
         y: mouseY,
-        hue: map(mouseX, 0, windowWidth, 0, 255),
+        hue: (mouseX / (windowWidth / 255)),
         bright: 255
       };
       blinks.push(blink);
@@ -47,16 +50,12 @@ var draw = function () {
   } // creating an object for circles flying around and off the screen
   else if (currentGraphic === 0) {
     if (mouseIsPressed) {
-      const trail = {
-        velocityScale: 1,
-        velocityX: random(-10, 10),
-        velocityY: random(-10, 10),
-        x: mouseX,
-        y: mouseY,
+      trail.coordinates.splice(0, 0, [mouseX, mouseY]);
+      const trailSegment = {
         hue: map(mouseX, 0, windowWidth, 0, 255),
         bright: 255
       };
-      trails.push(trail);
+      trail.properties.splice(0, 0, trailSegment);
     }
   } // creating an object for trail of circles
   else if (currentGraphic === 3) {
@@ -107,15 +106,15 @@ var draw = function () {
     fill((c.x / (windowWidth / 255)), 155, c.bright);
     ellipse(c.x, c.y, 80, 80);
   } // regular circles flying around the screen having their positions/colour updated every frame
+  
+  trail.coordinates.pop()
+  trail.coordinates.splice(0, 0, [mouseX, mouseY]);
+  for (let i = 0; i < trail.properties.length; i++) {
+    const tp = trail.properties[i];
+    const tc = trail.coordinates[i];
 
-  for (let i = 0; i < trails.length; i++) {
-    const t = trails[i];
-    
-
-    t.x = mouseX + (i * 5);
-    t.y = mouseY + (i * 5);
-    fill((t.x / (windowWidth / 255)), 155, t.bright);
-    ellipse(t.x, t.y, 80, 80);
+    fill(tp.hue, tp.bright, tp.bright);
+    ellipse(tc[0], tc[1], 80, 80);
   }
 
   for (let i = 0; i < kaleidoscopes.length; i++) {
@@ -130,7 +129,10 @@ var keyPressed = function() {
   if (keyCode === SHIFT) {
     circles = [];
     blinks = [];
-    trails = [];
+    trails = {
+      coordinates: [],
+      properties: []
+    };
     kaleidoscopes = [];
   } // Clears screen of everything.
 
@@ -141,5 +143,9 @@ var keyPressed = function() {
       currentGraphic = 0;
     } // Switches between available graphics.
   }
+
+  // if (keyCode === ENTER) {
+  //   console.log(trail.coordinates);
+  // }
 } 
 
