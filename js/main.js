@@ -5,22 +5,32 @@ let trail = {
   properties: []
 };
 let kaleidoscopes = [];
-let currentGraphic = 0;
+let currentGraphic = null;
 
 var setup = function () {
 
   createCanvas(windowWidth, windowHeight); // window.innerWidth
-  background(0); // black background; could also use RGB: background(0, 0, 0);
   colorMode(HSB, 255); // Use Hue Saturation Brightness, with a range of 0-255 for each
+  background(0); // black background; could also use RGB: background(0, 0, 0);
   noStroke(); // Don't draw a border on shapes  
-  textSize(24); // If you want to use text()
+  textSize(36); // If you want to use text()
+  
+  fill(0, 0, 255);
+  textAlign(CENTER);
+  text('Tab to switch between graphics', windowWidth / 2, windowHeight / 2);
+  text('Shift to clear the screen', windowWidth / 2, (windowHeight / 2) + 36);
+  text('Mouse click to interact', windowWidth / 2, (windowHeight / 2) + 72);
+  text('Enter to begin', windowWidth / 2, (windowHeight / 2) + 108);
+
+  noLoop();  // stops the draw function from looping. Still calls it once, though.
 }; // setup function sets up the initial properties of our canvas
 
 var draw = function () {
 
-  background(0); // resets background colour to black at each frame.
+  // background(0); // resets background colour to black at each frame.
   //following if statement switches between different graphics
   if (currentGraphic === 2) {
+    background(0);
     if (mouseIsPressed) {
       const blink = {
         velocityScale: 1,
@@ -35,6 +45,7 @@ var draw = function () {
     }
   } // creating an object for blinking circles bouncing around the screen
   else if (currentGraphic === 1) {
+    background(0);
     if (mouseIsPressed) {
       const circle = {
         velocityScale: 1,
@@ -49,6 +60,7 @@ var draw = function () {
     }
   } // creating an object for circles flying around and off the screen
   else if (currentGraphic === 0) {
+    background(0);
     if (mouseIsPressed) {
       trail.coordinates.splice(0, 0, [mouseX, mouseY]);
       const trailSegment = {
@@ -59,6 +71,7 @@ var draw = function () {
     }
   } // creating an object for trail of circles
   else if (currentGraphic === 3) {
+    background(0);
     if (mouseIsPressed) {
       const kaleidoscope = {
         velocityScale: 1,
@@ -126,6 +139,11 @@ var draw = function () {
 } //draw function called at every frame.
   
 var keyPressed = function() {
+  if (keyCode === ENTER) {
+    currentGraphic = 0;
+    loop();
+  }
+
   if (keyCode === SHIFT) {
     circles = [];
     blinks = [];
@@ -136,7 +154,7 @@ var keyPressed = function() {
     kaleidoscopes = [];
   } // Clears screen of everything.
 
-  if (keyCode === ENTER) {
+  if (keyCode === TAB) {
     if (currentGraphic != 3) {
       currentGraphic++;
     } else {
