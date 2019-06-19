@@ -4,7 +4,15 @@ let trail = {
   coordinates: [],
   properties: []
 };
-let kaleidoscopes = [];
+let kaleidoscopeO = [];
+let kaleidoscope = {
+  coordinates: [],
+  properties: []
+};
+
+// LAST LITTLE FEATURE TO LOOK INTO ADDING. HAVE A NICE TRANSPARENCY EFFECT THAT GRADUALLY BRINGS THE
+// ENTIRE COLOUR INTO FOCUS, RATHER THAN A SUDDEN APPEARANCE OF THE SHAPE/GRAPHIC.
+
 let currentGraphic = null;
 
 var setup = function () {
@@ -18,9 +26,9 @@ var setup = function () {
   fill(0, 0, 255);
   textAlign(CENTER);
   text('Tab to switch between graphics', windowWidth / 2, windowHeight / 2);
-  text('Shift to clear the screen', windowWidth / 2, (windowHeight / 2) + 36);
-  text('Mouse click to interact', windowWidth / 2, (windowHeight / 2) + 72);
-  text('Enter to begin', windowWidth / 2, (windowHeight / 2) + 108);
+  text('Shift to clear the screen', windowWidth / 2, (windowHeight / 2) + (36 * 1));
+  text('Mouse click to interact', windowWidth / 2, (windowHeight / 2) + (36 * 2));
+  text('Enter to begin', windowWidth / 2, (windowHeight / 2) + (36 * 3));
 
   noLoop();  // stops the draw function from looping. Still calls it once, though.
 }; // setup function sets up the initial properties of our canvas
@@ -59,7 +67,7 @@ var draw = function () {
       circles.push(circle);
     }
   } // creating an object for circles flying around and off the screen
-  else if (currentGraphic === 0) {
+  else if (currentGraphic === 3) {
     background(0);
     if (mouseIsPressed) {
       trail.coordinates.splice(0, 0, [mouseX, mouseY]);
@@ -70,19 +78,25 @@ var draw = function () {
       trail.properties.splice(0, 0, trailSegment);
     }
   } // creating an object for trail of circles
-  else if (currentGraphic === 3) {
+  else if (currentGraphic === 0) {
     background(0);
     if (mouseIsPressed) {
-      const kaleidoscope = {
-        velocityScale: 1,
-        velocityX: random(-10, 10),
-        velocityY: random(-10, 10),
-        x: mouseX,
-        y: mouseY,
+      kaleidoscope.coordinates.splice(0, 0, [mouseX, mouseY]);
+      const kaleidoscopeSegment = {
         hue: map(mouseX, 0, windowWidth, 0, 255),
         bright: 255
       };
-      kaleidoscopes.push(kaleidoscope);
+      kaleidoscope.properties.splice(0, 0, kaleidoscopeSegment);
+      // const kaleidoscopeO = {
+      //   velocityScale: 1,
+      //   velocityX: random(-10, 10),
+      //   velocityY: random(-10, 10),
+      //   x: mouseX,
+      //   y: mouseY,
+      //   hue: map(mouseX, 0, windowWidth, 0, 255),
+      //   bright: 255
+      // };
+      // kaleidoscopeO.push(kaleidoscope);
     }
   }
 
@@ -130,14 +144,23 @@ var draw = function () {
     ellipse(tc[0], tc[1], 80, 80);
   }
 
-  for (let i = 0; i < kaleidoscopes.length; i++) {
-    const k = kaleidoscopes[i];
+  // for (let i = 0; i < kaleidoscope.length; i++) {
+  //   const k = kaleidoscope[i];
 
-    fill((k.x / (windowWidth / 255)), 155, k.bright);
-    ellipse(k.x, k.y, 80, 80);
-  } // regular circles flying around the screen having their positions/colour updated every frame
-} //draw function called at every frame.
+  //   fill((k.x / (windowWidth / 255)), 155, k.bright);
+  //   rect(k.x, k.y, 100, 100);
+  // } // regular circles flying around the screen having their positions/colour updated every frame
   
+  
+  for (let i = 0; i < kaleidoscope.properties.length; i++) {
+    const kp = kaleidoscope.properties[i];
+    const kc = kaleidoscope.coordinates[i];
+
+    fill(kp.hue, kp.bright, kp.bright);
+    rect(kc[0], kc[1], 80, 80);
+  }
+} //draw function called at every frame.
+
 var keyPressed = function() {
   if (keyCode === ENTER) {
     currentGraphic = 0;
@@ -151,7 +174,10 @@ var keyPressed = function() {
       coordinates: [],
       properties: []
     };
-    kaleidoscopes = [];
+    kaleidoscope = {
+      coordinates: [],
+      properties: []
+    };
   } // Clears screen of everything.
 
   if (keyCode === TAB) {
