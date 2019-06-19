@@ -4,11 +4,7 @@ let trail = {
   coordinates: [],
   properties: []
 };
-let kaleidoscopeO = [];
-let kaleidoscope = {
-  coordinates: [],
-  properties: []
-};
+let kaleidoscope = [];
 
 // LAST LITTLE FEATURE TO LOOK INTO ADDING. HAVE A NICE TRANSPARENCY EFFECT THAT GRADUALLY BRINGS THE
 // ENTIRE COLOUR INTO FOCUS, RATHER THAN A SUDDEN APPEARANCE OF THE SHAPE/GRAPHIC.
@@ -81,22 +77,41 @@ var draw = function () {
   else if (currentGraphic === 0) {
     background(0);
     if (mouseIsPressed) {
-      kaleidoscope.coordinates.splice(0, 0, [mouseX, mouseY]);
-      const kaleidoscopeSegment = {
-        hue: map(mouseX, 0, windowWidth, 0, 255),
-        bright: 255
-      };
-      kaleidoscope.properties.splice(0, 0, kaleidoscopeSegment);
-      // const kaleidoscopeO = {
-      //   velocityScale: 1,
-      //   velocityX: random(-10, 10),
-      //   velocityY: random(-10, 10),
-      //   x: mouseX,
-      //   y: mouseY,
-      //   hue: map(mouseX, 0, windowWidth, 0, 255),
-      //   bright: 255
-      // };
-      // kaleidoscopeO.push(kaleidoscope);
+      let kaleidoscopeProperties = [];
+      let hue = map(mouseX, 0, windowWidth, 0, 255);
+      let bright = 255;
+      let x = mouseX;
+      let y = mouseY;
+            //   velocityScale: 1,
+            //   velocityX: random(-10, 10),
+            //   velocityY: random(-10, 10),
+
+      for (let i = 0; i < 4; i++) {
+        let mirroredXCoordinate;
+        let mirroredYCoordinate;
+
+        if (i === 0) {
+          mirroredXCoordinate = x;
+          mirroredYCoordinate = y;
+        } else if (i === 1) {
+          mirroredXCoordinate = windowWidth - x;
+          mirroredYCoordinate = y;
+        } else if (i === 2) {
+          mirroredXCoordinate = x;
+          mirroredYCoordinate = windowHeight - y;
+        } else {
+          mirroredXCoordinate = windowWidth - x;
+          mirroredYCoordinate = windowHeight - y;
+        }
+
+        kaleidoscopeProperties['Quater' + i] = {
+          hue: hue,
+          bright: bright,
+          x: mirroredXCoordinate,
+          y: mirroredYCoordinate
+        };
+      }
+      kaleidoscope.push(kaleidoscopeProperties);
     }
   }
 
@@ -143,21 +158,14 @@ var draw = function () {
     fill(tp.hue, tp.bright, tp.bright);
     ellipse(tc[0], tc[1], 80, 80);
   }
-
-  // for (let i = 0; i < kaleidoscope.length; i++) {
-  //   const k = kaleidoscope[i];
-
-  //   fill((k.x / (windowWidth / 255)), 155, k.bright);
-  //   rect(k.x, k.y, 100, 100);
-  // } // regular circles flying around the screen having their positions/colour updated every frame
   
-  
-  for (let i = 0; i < kaleidoscope.properties.length; i++) {
-    const kp = kaleidoscope.properties[i];
-    const kc = kaleidoscope.coordinates[i];
-
-    fill(kp.hue, kp.bright, kp.bright);
-    rect(kc[0], kc[1], 80, 80);
+  for (let i = 0; i < kaleidoscope.length; i++) {
+    const k = kaleidoscope[i];
+    for (const key in k) {
+      const currentQuater = k[key];
+      fill(currentQuater.hue, 255, currentQuater.bright);
+      rect(currentQuater.x, currentQuater.y, 80, 80)
+    }
   }
 } //draw function called at every frame.
 
@@ -174,10 +182,7 @@ var keyPressed = function() {
       coordinates: [],
       properties: []
     };
-    kaleidoscope = {
-      coordinates: [],
-      properties: []
-    };
+    kaleidoscope = [];
   } // Clears screen of everything.
 
   if (keyCode === TAB) {
@@ -187,9 +192,5 @@ var keyPressed = function() {
       currentGraphic = 0;
     } // Switches between available graphics.
   }
-
-  // if (keyCode === ENTER) {
-  //   console.log(trail.coordinates);
-  // }
 } 
 
