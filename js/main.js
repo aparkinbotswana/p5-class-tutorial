@@ -1,3 +1,5 @@
+
+
 let circles = [];
 let blinks = [];
 let trail = {
@@ -31,7 +33,6 @@ var setup = function () {
 
 var draw = function () {
 
-  // background(0); // resets background colour to black at each frame.
   //following if statement switches between different graphics
   if (currentGraphic === 2) {
     background(0);
@@ -75,34 +76,62 @@ var draw = function () {
     }
   } // creating an object for trail of circles
   else if (currentGraphic === 0) {
+    
     background(0);
+  
+        stroke('rgb(100%,0%,10%)');
+        line(0, 0, windowWidth, windowHeight)
+        line((windowWidth / 2), 0, (windowWidth / 2), windowHeight)
+        line(0, (windowHeight / 2), windowWidth, (windowHeight / 2))
+        line(0, windowHeight, windowWidth, 0)
+        // DELETE THIS CODE AFTERWARDS. LINE CODE TO SEE SEGEMENTS.
+
     if (mouseIsPressed) {
       let kaleidoscopeProperties = [];
       let hue = map(mouseX, 0, windowWidth, 0, 255);
       let bright = 255;
       let x = mouseX;
       let y = mouseY;
+      let xPositionPercentage = (x / windowWidth) * 100;
+      let yPositionPercentage = (y / windowHeight) * 100;
+      let windowWidthRate = windowWidth / 100;
+      let windowHeightRate = windowHeight / 100;
             //   velocityScale: 1,
             //   velocityX: random(-10, 10),
             //   velocityY: random(-10, 10),
 
-      for (let i = 0; i < 4; i++) {
+      for (let i = 0; i < 8; i++) {
         let mirroredXCoordinate;
         let mirroredYCoordinate;
 
         if (i === 0) {
-          mirroredXCoordinate = x;
-          mirroredYCoordinate = y;
+          mirroredXCoordinate = windowWidthRate * yPositionPercentage;
+          mirroredYCoordinate = windowHeightRate * xPositionPercentage;
         } else if (i === 1) {
-          mirroredXCoordinate = windowWidth - x;
-          mirroredYCoordinate = y;
+          mirroredXCoordinate = x;
+          mirroredYCoordinate = y;          
         } else if (i === 2) {
+          mirroredXCoordinate = windowWidth - x;
+          mirroredYCoordinate = y;          
+          // flip vertical axis LEFT
+        } else if (i === 3) {
+          mirroredXCoordinate = windowWidth - (windowWidthRate * yPositionPercentage);
+          mirroredYCoordinate = windowHeightRate * xPositionPercentage;
+        } else if (i === 4) {
+          mirroredXCoordinate = windowWidth - (windowWidthRate * yPositionPercentage);
+          mirroredYCoordinate = windowHeight - (windowHeightRate * xPositionPercentage);
+        } else if (i === 5) {
+          mirroredXCoordinate = windowWidth - x;
+          mirroredYCoordinate = windowHeight - y;
+          // flip vertical and horizontal. LEFT UP
+        } else if (i === 6) {
           mirroredXCoordinate = x;
           mirroredYCoordinate = windowHeight - y;
+          // flip horizontally. UP
         } else {
-          mirroredXCoordinate = windowWidth - x;
-          mirroredYCoordinate = windowHeight - y;
-        }
+          mirroredXCoordinate = windowWidthRate * yPositionPercentage;
+          mirroredYCoordinate = windowHeight - (windowHeightRate * xPositionPercentage);
+        } 
 
         kaleidoscopeProperties['Quater' + i] = {
           hue: hue,
@@ -164,7 +193,7 @@ var draw = function () {
     for (const key in k) {
       const currentQuater = k[key];
       fill(currentQuater.hue, 255, currentQuater.bright);
-      rect(currentQuater.x, currentQuater.y, 80, 80)
+      rect(currentQuater.x, currentQuater.y, 10, 10)
     }
   }
 } //draw function called at every frame.
