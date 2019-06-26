@@ -20,6 +20,8 @@ var setup = function () {
   background(0); // black background; could also use RGB: background(0, 0, 0);
   noStroke(); // Don't draw a border on shapes  
   textSize(36); // If you want to use text()
+  angleMode(DEGREES)
+
   
   fill(0, 0, 255);
   textAlign(CENTER);
@@ -77,7 +79,7 @@ var draw = function () {
   } // creating an object for trail of circles
   else if (currentGraphic === 0) {
     
-    background(0);
+    background(0); // Huh???? I think this is obsolete. Check it later. Might have something to do with initial call of draw function and displaying text. May also have something to do with rendering the red lines. Check this out at the end once everything is peachy.
   
         stroke('rgb(100%,0%,10%)');
         line(0, 0, windowWidth, windowHeight)
@@ -96,48 +98,49 @@ var draw = function () {
       let yPositionPercentage = (y / windowHeight) * 100;
       let windowWidthRate = windowWidth / 100;
       let windowHeightRate = windowHeight / 100;
+      let size = random(10, 41);
             //   velocityScale: 1,
             //   velocityX: random(-10, 10),
             //   velocityY: random(-10, 10),
 
       for (let i = 0; i < 8; i++) {
-        let mirroredXCoordinate;
+        let mirroredXCoordinate; 
         let mirroredYCoordinate;
+        // this allows us to mirror the shape created in all other sections of the kaleidoscope.
+        // the inclusion of the 'size' variable in the following if/else further offsets to get exact mirror effect.
 
         if (i === 0) {
+          mirroredXCoordinate = x;
+          mirroredYCoordinate = y;
+        } else if (i === 1) {
           mirroredXCoordinate = windowWidthRate * yPositionPercentage;
           mirroredYCoordinate = windowHeightRate * xPositionPercentage;
-        } else if (i === 1) {
-          mirroredXCoordinate = x;
-          mirroredYCoordinate = y;          
         } else if (i === 2) {
-          mirroredXCoordinate = windowWidth - x;
-          mirroredYCoordinate = y;          
-          // flip vertical axis LEFT
+          mirroredXCoordinate = (windowWidth - x) - size;
+          mirroredYCoordinate = y;
         } else if (i === 3) {
-          mirroredXCoordinate = windowWidth - (windowWidthRate * yPositionPercentage);
+          mirroredXCoordinate = (windowWidth - (windowWidthRate * yPositionPercentage)) - size;
           mirroredYCoordinate = windowHeightRate * xPositionPercentage;
         } else if (i === 4) {
-          mirroredXCoordinate = windowWidth - (windowWidthRate * yPositionPercentage);
-          mirroredYCoordinate = windowHeight - (windowHeightRate * xPositionPercentage);
+          mirroredXCoordinate = (windowWidth - (windowWidthRate * yPositionPercentage)) - size;
+          mirroredYCoordinate = (windowHeight - (windowHeightRate * xPositionPercentage)) - size;
         } else if (i === 5) {
-          mirroredXCoordinate = windowWidth - x;
-          mirroredYCoordinate = windowHeight - y;
-          // flip vertical and horizontal. LEFT UP
+          mirroredXCoordinate = (windowWidth - x) - size;
+          mirroredYCoordinate = (windowHeight - y) - size;
         } else if (i === 6) {
           mirroredXCoordinate = x;
-          mirroredYCoordinate = windowHeight - y;
-          // flip horizontally. UP
+          mirroredYCoordinate = (windowHeight - y) - size;
         } else {
           mirroredXCoordinate = windowWidthRate * yPositionPercentage;
-          mirroredYCoordinate = windowHeight - (windowHeightRate * xPositionPercentage);
-        } 
+          mirroredYCoordinate = (windowHeight - (windowHeightRate * xPositionPercentage)) - size;
+        } // mirrors coordinates into correct positions
 
         kaleidoscopeProperties['Quater' + i] = {
           hue: hue,
           bright: bright,
           x: mirroredXCoordinate,
-          y: mirroredYCoordinate
+          y: mirroredYCoordinate,
+          size: size
         };
       }
       kaleidoscope.push(kaleidoscopeProperties);
@@ -191,11 +194,11 @@ var draw = function () {
   for (let i = 0; i < kaleidoscope.length; i++) {
     const k = kaleidoscope[i];
     for (const key in k) {
-      const currentQuater = k[key];
-      fill(currentQuater.hue, 255, currentQuater.bright);
-      rect(currentQuater.x, currentQuater.y, 10, 10)
+      const currentSegment = k[key];
+      fill(currentSegment.hue, 255, currentSegment.bright);
+      rect(currentSegment.x, currentSegment.y, currentSegment.size, currentSegment.size);
     }
-  }
+  } // Get ready to lose your shit!!!!
 } //draw function called at every frame.
 
 var keyPressed = function() {
@@ -221,5 +224,5 @@ var keyPressed = function() {
       currentGraphic = 0;
     } // Switches between available graphics.
   }
-} 
+} // keyPressed function closing. 
 
