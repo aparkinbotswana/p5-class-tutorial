@@ -34,17 +34,18 @@ var setup = () => {
   text('Shift to clear the screen', windowWidth / 2, (windowHeight / 2) + (36 * 1));
   text('Mouse click to interact', windowWidth / 2, (windowHeight / 2) + (36 * 2));
   text('Enter to begin', windowWidth / 2, (windowHeight / 2) + (36 * 3));
-  noLoop();  // stops the draw function from looping. Still calls it once, though.
+  noLoop();  // stops the draw function from looping. Still calls it once, though
+                // stroke('rgb(100%,0%,10%)');
+                // line(0, 0, windowWidth, windowHeight)
+                // line((windowWidth / 2), 0, (windowWidth / 2), windowHeight)
+                // line(0, (windowHeight / 2), windowWidth, (windowHeight / 2))
+                // line(0, windowHeight, windowWidth, 0)
+                // //RED LINERS
 
-        // stroke('rgb(100%,0%,10%)');
-        // line(0, 0, windowWidth, windowHeight)
-        // line((windowWidth / 2), 0, (windowWidth / 2), windowHeight)
-        // line(0, (windowHeight / 2), windowWidth, (windowHeight / 2))
-        // line(0, windowHeight, windowWidth, 0)
-        //RED LINERS
 }; // setup function sets up the initial properties of our canvas
 
 var draw = () => {
+
   //following if statement switches between different graphics
   if (currentGraphic === 2) {
     background(0);
@@ -110,7 +111,7 @@ var draw = () => {
       let windowWidthRate = windowWidth / 100;
       let windowHeightRate = windowHeight / 100;
       let size = random(10, 41);
-      let velocityScale = 0.5;
+      let velocityScale = 0.3;
       let velocityX = random(-10, 10);
       let velocityY = random(-10, 10);
       let shape = chooseShape(x, y, size, size);
@@ -134,35 +135,35 @@ var draw = () => {
           mirroredVelocityX = velocityX * -1
           mirroredVelocityY = velocityY * -1
         } else if (i === 2) {
-          mirroredXCoordinate = (windowWidth - x) - size;
+          mirroredXCoordinate = (windowWidth - x);
           mirroredYCoordinate = y;
           mirroredVelocityX = velocityX * -1
           mirroredVelocityY = velocityY 
         } else if (i === 3) {
-          mirroredXCoordinate = (windowWidth - (windowWidthRate * yPositionPercentage)) - size;
+          mirroredXCoordinate = (windowWidth - (windowWidthRate * yPositionPercentage));
           mirroredYCoordinate = windowHeightRate * xPositionPercentage;
           mirroredVelocityX = velocityX 
           mirroredVelocityY = velocityY * -1
         } else if (i === 4) {
-          mirroredXCoordinate = (windowWidth - (windowWidthRate * yPositionPercentage)) - size;
-          mirroredYCoordinate = (windowHeight - (windowHeightRate * xPositionPercentage)) - size;
+          mirroredXCoordinate = (windowWidth - (windowWidthRate * yPositionPercentage));
+          mirroredYCoordinate = (windowHeight - (windowHeightRate * xPositionPercentage));
           mirroredVelocityX = velocityX
           mirroredVelocityY = velocityY
         } else if (i === 5) {
-          mirroredXCoordinate = (windowWidth - x) - size;
-          mirroredYCoordinate = (windowHeight - y) - size;
+          mirroredXCoordinate = (windowWidth - x);
+          mirroredYCoordinate = (windowHeight - y);
           mirroredVelocityX = velocityX * -1
           mirroredVelocityY = velocityY * -1
         } else if (i === 6) {
           mirroredXCoordinate = x;
-          mirroredYCoordinate = (windowHeight - y) - size;
+          mirroredYCoordinate = (windowHeight - y);
           mirroredVelocityX = velocityX
           mirroredVelocityY = velocityY * -1
         } else {
           mirroredXCoordinate = windowWidthRate * yPositionPercentage;
-          mirroredYCoordinate = (windowHeight - (windowHeightRate * xPositionPercentage)) - size;
+          mirroredYCoordinate = (windowHeight - (windowHeightRate * xPositionPercentage));
           mirroredVelocityX = velocityX * -1
-          mirroredVelocityY = velocityY
+          mirroredVelocityY = velocityY 
         } // mirrors coordinates/shapes into correct positions on screen.
 
         kaleidoscopeProperties['segment' + i] = {
@@ -235,13 +236,14 @@ var keyPressed = function() {
   }
 
   if (keyCode === SHIFT) {
-    circles = [];
-    blinks = [];
-    trail = {
-      coordinates: [],
-      properties: []
-    };
-    kaleidoscope = [];
+    noLoop()
+    // circles = [];
+    // blinks = [];
+    // trail = {
+    //   coordinates: [],
+    //   properties: []
+    // };
+    // kaleidoscope = [];
   } // Clears screen of everything.
 
   if (keyCode === TAB) {
