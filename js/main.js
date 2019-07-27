@@ -166,7 +166,7 @@ var draw = () => {
           mirroredVelocityY = velocityY 
         } // mirrors coordinates/shapes into correct positions on screen.
 
-        kaleidoscopeProperties['segment' + i] = {
+        kaleidoscopeProperties["segments" + i] = {
           hue: hue,
           brightness: brightness,
           x: mirroredXCoordinate,
@@ -218,7 +218,7 @@ var draw = () => {
     const k = kaleidoscope[i];
     for (const key in k) {
       const currentSegment = k[key];
-      fill(currentSegment.hue, 255, currentSegment.brightness);
+      fill(currentSegment.hue, 255, currentSegment.brightness, 100);
       wallCollideCheck(currentSegment);
       currentSegment.x += currentSegment.velocityX * currentSegment.velocityScale;
       currentSegment.y += currentSegment.velocityY * currentSegment.velocityScale;
@@ -236,14 +236,13 @@ var keyPressed = function() {
   }
 
   if (keyCode === SHIFT) {
-    noLoop()
-    // circles = [];
-    // blinks = [];
-    // trail = {
-    //   coordinates: [],
-    //   properties: []
-    // };
-    // kaleidoscope = [];
+    circles = [];
+    blinks = [];
+    trail = {
+      coordinates: [],
+      properties: []
+    };
+    kaleidoscope = [];
   } // Clears screen of everything.
 
   if (keyCode === TAB) {
