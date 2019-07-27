@@ -38,26 +38,6 @@ var setup = () => {
 }; // setup function sets up the initial properties of our canvas
 
 var draw = () => {
-
-    // const shapes = {
-    //   rect: function (x, y, w, h, cornerRadius) {
-    //     rect(x, y, w, h, cornerRadius)
-    //   },
-    //   ellipse: function (x, y, w, h) {
-    //     ellipse(x, y, w, h)
-    //   },
-    //   triangle: function (x1, y1, x2, y2, x3, y3) {
-    //     triangle(x1, y1, x2, y2, x3, y3)
-    //   }
-    // }
-
-    // console.log(Object.entries(shapes));
-    
-// a = Object.entries(shapes)
-// console.log(a);
-// console.log(a[2][1]);
-// a[0][1](20, 20, 20, 20)
-
   //following if statement switches between different graphics
   if (currentGraphic === 2) {
     background(0);
@@ -104,7 +84,6 @@ var draw = () => {
     background(0); // Huh???? I think this is obsolete. Check it later. Might have something to do with initial call of draw function and displaying text. May also have something to do with rendering the red lines. Check this out at the end once everything is peachy.
     if (mouseIsPressed) {
 
-
       let chooseShape = (x, y, w, h) => {
         let randomNum = Math.floor(Math.random() * Math.floor(2));
         if (randomNum === 0) {
@@ -112,7 +91,7 @@ var draw = () => {
         } else if (randomNum === 1) {
           return function (x, y, w, h) {ellipse(x, y, w, h)};
         }
-      }
+      } // this function randomises the shapes which are rendered in the draw function for the KS. Add more to it for further shapes.
 
       let kaleidoscopeProperties = [];
       let hue = map(mouseX, 0, windowWidth, 0, 255);
@@ -124,7 +103,7 @@ var draw = () => {
       let windowWidthRate = windowWidth / 100;
       let windowHeightRate = windowHeight / 100;
       let size = random(10, 41);
-      let velocityScale = random(1, 3);
+      let velocityScale = 1;
       let velocityX = random(-10, 10);
       let velocityY = random(-10, 10);
       let shape = chooseShape(x, y, size, size);
@@ -159,7 +138,7 @@ var draw = () => {
         } else {
           mirroredXCoordinate = windowWidthRate * yPositionPercentage;
           mirroredYCoordinate = (windowHeight - (windowHeightRate * xPositionPercentage)) - size;
-        } // mirrors coordinates into correct positions
+        } // mirrors coordinates/shapes into correct positions on screen.
 
         kaleidoscopeProperties['segment' + i] = {
           hue: hue,
@@ -171,7 +150,7 @@ var draw = () => {
           velocityX: velocityX,
           velocityY: velocityY,
           shape: shape
-        };
+        }; // creates an object with above properties on the fly for each segment of the screen.
       }
       kaleidoscope.push(kaleidoscopeProperties);
     }
@@ -206,7 +185,7 @@ var draw = () => {
     const tc = trail.coordinates[i];
 
     fill(tp.hue, tp.brightness, tp.brightness);
-    ellipse(tc[0], tc[1], 80, 80);
+    rect(tc[0], tc[1], 3, 3);
   }
   
   for (let i = 0; i < kaleidoscope.length; i++) {
@@ -214,22 +193,9 @@ var draw = () => {
     for (const key in k) {
       const currentSegment = k[key];
       fill(currentSegment.hue, 255, currentSegment.brightness);
-      // console.log(currentSegment.shape);
+      wallCollideCheck(currentSegment);      
       currentSegment.shape(currentSegment.x, currentSegment.y, currentSegment.size, currentSegment.size);
       // rect(currentSegment.x, currentSegment.y, currentSegment.size, currentSegment.size);
-
-          // const c = circles[i];
-
-          // if (c.x >= windowWidth || c.x <= 0) {
-          //   c.velocityX *= -1;
-          // }
-          // if (c.y >= windowHeight || c.y <= 0) {
-          //   c.velocityY *= -1;
-          // }
-
-          // c.x += c.velocityX * c.velocityScale;
-          // c.y += c.velocityY * c.velocityScale;
-
     }
   } // Get ready to lose your shit!!!!
 } //draw function called at every frame.
