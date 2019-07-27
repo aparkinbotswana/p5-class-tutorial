@@ -219,12 +219,11 @@ var draw = () => {
       const currentSegment = k[key];
       fill(currentSegment.hue, 255, currentSegment.brightness);
       wallCollideCheck(currentSegment);
-
       currentSegment.x += currentSegment.velocityX * currentSegment.velocityScale;
       currentSegment.y += currentSegment.velocityY * currentSegment.velocityScale;
       
       // currentSegment.shape(currentSegment.x, currentSegment.y, currentSegment.size, currentSegment.size);
-      rect(currentSegment.x, currentSegment.y, currentSegment.size, currentSegment.size);
+      ellipse(currentSegment.x, currentSegment.y, currentSegment.size, currentSegment.size);
     }
   } // Get ready to lose your shit!!!!
 } //draw function called at every frame.
@@ -253,10 +252,3 @@ var keyPressed = function() {
     } // Switches between available graphics.
   }
 } // keyPressed function closing. 
-
-        // stroke('rgb(100%,0%,10%)');
-        // line(0, 0, windowWidth, windowHeight)
-        // line((windowWidth / 2), 0, (windowWidth / 2), windowHeight)
-        // line(0, (windowHeight / 2), windowWidth, (windowHeight / 2))
-        // line(0, windowHeight, windowWidth, 0)
-        // DELETE THIS CODE AFTERWARDS. LINE CODE TO SEE SEGEMENTS.
