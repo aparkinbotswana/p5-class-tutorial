@@ -35,6 +35,13 @@ var setup = () => {
   text('Mouse click to interact', windowWidth / 2, (windowHeight / 2) + (36 * 2));
   text('Enter to begin', windowWidth / 2, (windowHeight / 2) + (36 * 3));
   noLoop();  // stops the draw function from looping. Still calls it once, though.
+
+        // stroke('rgb(100%,0%,10%)');
+        // line(0, 0, windowWidth, windowHeight)
+        // line((windowWidth / 2), 0, (windowWidth / 2), windowHeight)
+        // line(0, (windowHeight / 2), windowWidth, (windowHeight / 2))
+        // line(0, windowHeight, windowWidth, 0)
+        //RED LINERS
 }; // setup function sets up the initial properties of our canvas
 
 var draw = () => {
@@ -81,7 +88,7 @@ var draw = () => {
     }
   } // creating an object for trail of circles
   else if (currentGraphic === 0) {
-    background(0); // Huh???? I think this is obsolete. Check it later. Might have something to do with initial call of draw function and displaying text. May also have something to do with rendering the red lines. Check this out at the end once everything is peachy.
+    background(0);
     if (mouseIsPressed) {
 
       let chooseShape = (x, y, w, h) => {
@@ -103,7 +110,7 @@ var draw = () => {
       let windowWidthRate = windowWidth / 100;
       let windowHeightRate = windowHeight / 100;
       let size = random(10, 41);
-      let velocityScale = 1;
+      let velocityScale = 0.5;
       let velocityX = random(-10, 10);
       let velocityY = random(-10, 10);
       let shape = chooseShape(x, y, size, size);
@@ -111,33 +118,51 @@ var draw = () => {
       for (let i = 0; i < 8; i++) {
         let mirroredXCoordinate; 
         let mirroredYCoordinate;
+        let mirroredVelocityX;
+        let mirroredVelocityY;
         // this allows us to mirror the shape created in all other sections of the kaleidoscope.
         // the inclusion of the 'size' variable in the following if/else further offsets to get exact mirror effect.
 
         if (i === 0) {
           mirroredXCoordinate = x;
           mirroredYCoordinate = y;
+          mirroredVelocityX = velocityX
+          mirroredVelocityY = velocityY
         } else if (i === 1) {
           mirroredXCoordinate = windowWidthRate * yPositionPercentage;
           mirroredYCoordinate = windowHeightRate * xPositionPercentage;
+          mirroredVelocityX = velocityX * -1
+          mirroredVelocityY = velocityY * -1
         } else if (i === 2) {
           mirroredXCoordinate = (windowWidth - x) - size;
           mirroredYCoordinate = y;
+          mirroredVelocityX = velocityX * -1
+          mirroredVelocityY = velocityY 
         } else if (i === 3) {
           mirroredXCoordinate = (windowWidth - (windowWidthRate * yPositionPercentage)) - size;
           mirroredYCoordinate = windowHeightRate * xPositionPercentage;
+          mirroredVelocityX = velocityX 
+          mirroredVelocityY = velocityY * -1
         } else if (i === 4) {
           mirroredXCoordinate = (windowWidth - (windowWidthRate * yPositionPercentage)) - size;
           mirroredYCoordinate = (windowHeight - (windowHeightRate * xPositionPercentage)) - size;
+          mirroredVelocityX = velocityX
+          mirroredVelocityY = velocityY
         } else if (i === 5) {
           mirroredXCoordinate = (windowWidth - x) - size;
           mirroredYCoordinate = (windowHeight - y) - size;
+          mirroredVelocityX = velocityX * -1
+          mirroredVelocityY = velocityY * -1
         } else if (i === 6) {
           mirroredXCoordinate = x;
           mirroredYCoordinate = (windowHeight - y) - size;
+          mirroredVelocityX = velocityX
+          mirroredVelocityY = velocityY * -1
         } else {
           mirroredXCoordinate = windowWidthRate * yPositionPercentage;
           mirroredYCoordinate = (windowHeight - (windowHeightRate * xPositionPercentage)) - size;
+          mirroredVelocityX = velocityX * -1
+          mirroredVelocityY = velocityY
         } // mirrors coordinates/shapes into correct positions on screen.
 
         kaleidoscopeProperties['segment' + i] = {
@@ -147,8 +172,8 @@ var draw = () => {
           y: mirroredYCoordinate,
           size: size,
           velocityScale: velocityScale,
-          velocityX: velocityX,
-          velocityY: velocityY,
+          velocityX: mirroredVelocityX,
+          velocityY: mirroredVelocityY,
           shape: shape
         }; // creates an object with above properties on the fly for each segment of the screen.
       }
@@ -193,9 +218,13 @@ var draw = () => {
     for (const key in k) {
       const currentSegment = k[key];
       fill(currentSegment.hue, 255, currentSegment.brightness);
-      wallCollideCheck(currentSegment);      
-      currentSegment.shape(currentSegment.x, currentSegment.y, currentSegment.size, currentSegment.size);
-      // rect(currentSegment.x, currentSegment.y, currentSegment.size, currentSegment.size);
+      wallCollideCheck(currentSegment);
+
+      currentSegment.x += currentSegment.velocityX * currentSegment.velocityScale;
+      currentSegment.y += currentSegment.velocityY * currentSegment.velocityScale;
+      
+      // currentSegment.shape(currentSegment.x, currentSegment.y, currentSegment.size, currentSegment.size);
+      rect(currentSegment.x, currentSegment.y, currentSegment.size, currentSegment.size);
     }
   } // Get ready to lose your shit!!!!
 } //draw function called at every frame.
