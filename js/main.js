@@ -210,7 +210,7 @@ var draw = () => {
     const tc = trail.coordinates[i];
 
     fill(tp.hue, tp.brightness, tp.brightness);
-    rect(tc[0], tc[1], 3, 3);
+    ellipse(tc[0], tc[1], 10, 10);
   }
   
   for (let i = 0; i < kaleidoscope.length; i++) {
