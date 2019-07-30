@@ -92,20 +92,22 @@ var draw = () => {
     background(0);
     if (mouseIsPressed) {
 
-      let chooseShape = (x, y, w, h) => {
+      let chooseShape = (x, y, w, h, r) => {
+        // console.log(r);
         let randomNum = Math.floor(Math.random() * Math.floor(2));
         if (randomNum === 0) {
-          return function (x, y, w, h) {rect(x, y, w, h)};
+          return function (x, y, w, h, r) {rect(x, y, w, h, r)};
         } else if (randomNum === 1) {
           return function (x, y, w, h) {ellipse(x, y, w, h)};
         }
       } // this function randomises the shapes which are rendered in the draw function for the KS. Add more to it for further shapes.
-
+      // 30 SECOND LIFESPAN SHOULD BE 1800!!!!!!!!!
       let kaleidoscopeProperties = [];
       let hue = map(mouseX, 0, windowWidth, 0, 255);
       let brightness = 255;
       let x = mouseX;
       let y = mouseY;
+      let radius = 10;
       let xPositionPercentage = (x / windowWidth) * 100;
       let yPositionPercentage = (y / windowHeight) * 100;
       let windowWidthRate = windowWidth / 100;
@@ -114,7 +116,7 @@ var draw = () => {
       let velocityScale = 0.3;
       let velocityX = random(-10, 10);
       let velocityY = random(-10, 10);
-      let shape = chooseShape(x, y, size, size);
+      let shape = chooseShape(x, y, size, size, radius);
 
       for (let i = 0; i < 8; i++) {
         let mirroredXCoordinate; 
@@ -168,6 +170,7 @@ var draw = () => {
 
         kaleidoscopeProperties["segments" + i] = {
           hue: hue,
+          radius: radius,
           brightness: brightness,
           x: mirroredXCoordinate,
           y: mirroredYCoordinate,
@@ -223,8 +226,9 @@ var draw = () => {
       currentSegment.x += currentSegment.velocityX * currentSegment.velocityScale;
       currentSegment.y += currentSegment.velocityY * currentSegment.velocityScale;
       
-      // currentSegment.shape(currentSegment.x, currentSegment.y, currentSegment.size, currentSegment.size);
-      ellipse(currentSegment.x, currentSegment.y, currentSegment.size, currentSegment.size);
+      currentSegment.shape(currentSegment.x, currentSegment.y, currentSegment.size, currentSegment.size, currentSegment.radius);
+      // ellipse(currentSegment.x, currentSegment.y, currentSegment.size, currentSegment.size);
+      // rect(currentSegment.x, currentSegment.y, currentSegment.size, currentSegment.size);
     }
   } // Get ready to lose your shit!!!!
 } //draw function called at every frame.
@@ -251,5 +255,9 @@ var keyPressed = function() {
     } else {
       currentGraphic = 0;
     } // Switches between available graphics.
+  }
+
+  if (keyCode === 90) {
+    noLoop();
   }
 } // keyPressed function closing. 
