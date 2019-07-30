@@ -90,13 +90,19 @@ var draw = () => {
   } // creating an object for trail of circles
   else if (currentGraphic === 0) {
     background(0);
+                    // stroke('rgb(100%,0%,10%)');
+                    // line(0, 0, windowWidth, windowHeight)
+                    // line((windowWidth / 2), 0, (windowWidth / 2), windowHeight)
+                    // line(0, (windowHeight / 2), windowWidth, (windowHeight / 2))
+                    // line(0, windowHeight, windowWidth, 0)
+                    // //RED LINERS
     if (mouseIsPressed) {
 
-      let chooseShape = (x, y, w, h, r) => {
+      let chooseShape = (x, y, w, h, r, hS) => {
         // console.log(r);
         let randomNum = Math.floor(Math.random() * Math.floor(2));
         if (randomNum === 0) {
-          return function (x, y, w, h, r) {rect(x, y, w, h, r)};
+          return function (x, y, w, h, r, hS) {rect((x - hS), (y - hS), w, h, r)};
         } else if (randomNum === 1) {
           return function (x, y, w, h) {ellipse(x, y, w, h)};
         }
@@ -113,6 +119,7 @@ var draw = () => {
       let windowWidthRate = windowWidth / 100;
       let windowHeightRate = windowHeight / 100;
       let size = random(10, 41);
+      let halfSize = size / 2; // halfSize variable used to properly position rectangle and mirror it properly relative to the ellipse.
       let velocityScale = 0.3;
       let velocityX = random(-10, 10);
       let velocityY = random(-10, 10);
@@ -175,6 +182,7 @@ var draw = () => {
           x: mirroredXCoordinate,
           y: mirroredYCoordinate,
           size: size,
+          halfSize: halfSize,
           velocityScale: velocityScale,
           velocityX: mirroredVelocityX,
           velocityY: mirroredVelocityY,
@@ -226,7 +234,7 @@ var draw = () => {
       currentSegment.x += currentSegment.velocityX * currentSegment.velocityScale;
       currentSegment.y += currentSegment.velocityY * currentSegment.velocityScale;
       
-      currentSegment.shape(currentSegment.x, currentSegment.y, currentSegment.size, currentSegment.size, currentSegment.radius);
+      currentSegment.shape(currentSegment.x, currentSegment.y, currentSegment.size, currentSegment.size, currentSegment.radius, currentSegment.halfSize);
       // ellipse(currentSegment.x, currentSegment.y, currentSegment.size, currentSegment.size);
       // rect(currentSegment.x, currentSegment.y, currentSegment.size, currentSegment.size);
     }
