@@ -45,7 +45,6 @@ var setup = () => {
 }; // setup function sets up the initial properties of our canvas
 
 var draw = () => {
-
   //following if statement switches between different graphics
   if (currentGraphic === 2) {
     background(0);
@@ -97,9 +96,7 @@ var draw = () => {
                     // line(0, windowHeight, windowWidth, 0)
                     // //RED LINERS
     if (mouseIsPressed) {
-
       let chooseShape = (x, y, w, h, r, hS) => {
-        // console.log(r);
         let randomNum = Math.floor(Math.random() * Math.floor(2));
         if (randomNum === 0) {
           return function (x, y, w, h, r, hS) {rect((x - hS), (y - hS), w, h, r)};
@@ -108,7 +105,10 @@ var draw = () => {
         }
       } // this function randomises the shapes which are rendered in the draw function for the KS. Add more to it for further shapes.
       // 30 SECOND LIFESPAN SHOULD BE 1800!!!!!!!!!
-      let kaleidoscopeProperties = [];
+      let kaleidoscopeProperties = {
+        lifespan: 30,
+        segments: []
+      };
       let hue = map(mouseX, 0, windowWidth, 0, 255);
       let brightness = 255;
       let x = mouseX;
@@ -175,7 +175,7 @@ var draw = () => {
           mirroredVelocityY = velocityY 
         } // mirrors coordinates/shapes into correct positions on screen.
 
-        kaleidoscopeProperties["segments" + i] = {
+        kaleidoscopeProperties.segments["segment" + i] = {
           hue: hue,
           radius: radius,
           brightness: brightness,
@@ -226,7 +226,7 @@ var draw = () => {
   }
   
   for (let i = 0; i < kaleidoscope.length; i++) {
-    const k = kaleidoscope[i];
+    const k = kaleidoscope[i].segments;
     for (const key in k) {
       const currentSegment = k[key];
       fill(currentSegment.hue, 255, currentSegment.brightness, 100);
@@ -238,6 +238,10 @@ var draw = () => {
       // ellipse(currentSegment.x, currentSegment.y, currentSegment.size, currentSegment.size);
       // rect(currentSegment.x, currentSegment.y, currentSegment.size, currentSegment.size);
     }
+    kaleidoscope[i].lifespan -= 1
+    if (kaleidoscope[i].lifespan === 0) {
+      kaleidoscope.shift();
+    } // deletes first element from array once it has reached the end of its lifespan.
   } // Get ready to lose your shit!!!!
 } //draw function called at every frame.
 
