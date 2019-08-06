@@ -14,9 +14,10 @@ const kaleidoscopeProperties = () => {
   };
   let hue = map(mouseX, 0, windowWidth, 0, 255);
   let brightness = 255;
+  let alpha = 5
   let x = mouseX;
   let y = mouseY;
-  let radius = 10;
+  let radius = 8;
   let xPositionPercentage = (x / windowWidth) * 100;
   let yPositionPercentage = (y / windowHeight) * 100;
   let windowWidthRate = windowWidth / 100;
@@ -78,6 +79,7 @@ const kaleidoscopeProperties = () => {
     } // mirrors coordinates/shapes into correct positions on screen.
     makeKaleidoscope.segments["segment" + i] = {
       hue: hue,
+      alpha: alpha,
       radius: radius,
       brightness: brightness,
       x: mirroredXCoordinate,
@@ -218,18 +220,23 @@ var draw = () => {
     const k = kaleidoscope[i].segments;
     for (const key in k) {
       const currentSegment = k[key];
-      fill(currentSegment.hue, 255, currentSegment.brightness, 100);
+      fill(currentSegment.hue, 255, currentSegment.brightness, currentSegment.alpha);
       wallCollideCheck(currentSegment);
+      if (kaleidoscope[i].lifespan <= 100) {
+        currentSegment.alpha -= 1;
+      } else if (currentSegment.alpha != 100) {
+        currentSegment.alpha += 1;
+      }
       currentSegment.x += currentSegment.velocityX * currentSegment.velocityScale;
       currentSegment.y += currentSegment.velocityY * currentSegment.velocityScale;
       currentSegment.shape(currentSegment.x, currentSegment.y, currentSegment.size, currentSegment.size, currentSegment.radius, currentSegment.halfSize);
       // ellipse(currentSegment.x, currentSegment.y, currentSegment.size, currentSegment.size);
-      // rect(currentSegment.x, currentSegment.y, currentSegment.size, currentSegment.size);
+      // rect(currentSegment.x, currentSegment.y, currentSegment.size, currentSegment.size);    
     }
     kaleidoscope[i].lifespan -= 1
     if (kaleidoscope[i].lifespan === 0) {
       kaleidoscope.shift();
-    } // deletes first element from array once it has reached the end of its lifespan.
+    } // deletes first element from array once it has reached the end of its lifespan
   } // Get ready to lose your shit!!!!
 } //draw function called at every frame.
 
