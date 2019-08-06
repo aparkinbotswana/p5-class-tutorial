@@ -1,3 +1,98 @@
+const kaleidoscopeProperties = () => {
+  const chooseShape = (x, y, w, h, r, hS) => {
+    let randomNum = Math.floor(Math.random() * Math.floor(2));
+    if (randomNum === 0) {
+      return function (x, y, w, h, r, hS) {rect((x - hS), (y - hS), w, h, r)};
+    } else if (randomNum === 1) {
+      return function (x, y, w, h) {ellipse(x, y, w, h)};
+    }
+  }; // this function randomises the shapes which are rendered in the draw function for the KS. Add more to it for further shapes.
+
+  let makeKaleidoscope = {
+    lifespan: 500,
+    segments: []
+  };
+  let hue = map(mouseX, 0, windowWidth, 0, 255);
+  let brightness = 255;
+  let x = mouseX;
+  let y = mouseY;
+  let radius = 10;
+  let xPositionPercentage = (x / windowWidth) * 100;
+  let yPositionPercentage = (y / windowHeight) * 100;
+  let windowWidthRate = windowWidth / 100;
+  let windowHeightRate = windowHeight / 100;
+  let size = random(10, 41);
+  let halfSize = size / 2; // halfSize variable used to properly position rectangle and mirror it properly relative to the ellipse.
+  let velocityScale = 0.3;
+  let velocityX = random(-10, 10);
+  let velocityY = random(-10, 10);
+  let shape = chooseShape(x, y, size, size, radius);
+
+  for (let i = 0; i < 8; i++) {
+    let mirroredXCoordinate; 
+    let mirroredYCoordinate;
+    let mirroredVelocityX;
+    let mirroredVelocityY;
+  // this allows us to mirror the shape created in all other sections of the kaleidoscope.
+  // the inclusion of the 'size' variable in the following if/else further offsets to get exact mirror effect.
+    if (i === 0) {
+      mirroredXCoordinate = x;
+      mirroredYCoordinate = y;
+      mirroredVelocityX = velocityX
+      mirroredVelocityY = velocityY
+    } else if (i === 1) {
+      mirroredXCoordinate = windowWidthRate * yPositionPercentage;
+      mirroredYCoordinate = windowHeightRate * xPositionPercentage;
+      mirroredVelocityX = velocityX * -1
+      mirroredVelocityY = velocityY * -1
+    } else if (i === 2) {
+      mirroredXCoordinate = (windowWidth - x);
+      mirroredYCoordinate = y;
+      mirroredVelocityX = velocityX * -1
+      mirroredVelocityY = velocityY 
+    } else if (i === 3) {
+      mirroredXCoordinate = (windowWidth - (windowWidthRate * yPositionPercentage));
+      mirroredYCoordinate = windowHeightRate * xPositionPercentage;
+      mirroredVelocityX = velocityX 
+      mirroredVelocityY = velocityY * -1
+    } else if (i === 4) {
+      mirroredXCoordinate = (windowWidth - (windowWidthRate * yPositionPercentage));
+      mirroredYCoordinate = (windowHeight - (windowHeightRate * xPositionPercentage));
+      mirroredVelocityX = velocityX
+      mirroredVelocityY = velocityY
+    } else if (i === 5) {
+      mirroredXCoordinate = (windowWidth - x);
+      mirroredYCoordinate = (windowHeight - y);
+      mirroredVelocityX = velocityX * -1
+      mirroredVelocityY = velocityY * -1
+    } else if (i === 6) {
+      mirroredXCoordinate = x;
+      mirroredYCoordinate = (windowHeight - y);
+      mirroredVelocityX = velocityX
+      mirroredVelocityY = velocityY * -1
+    } else {
+      mirroredXCoordinate = windowWidthRate * yPositionPercentage;
+      mirroredYCoordinate = (windowHeight - (windowHeightRate * xPositionPercentage));
+      mirroredVelocityX = velocityX * -1
+      mirroredVelocityY = velocityY 
+    } // mirrors coordinates/shapes into correct positions on screen.
+    makeKaleidoscope.segments["segment" + i] = {
+      hue: hue,
+      radius: radius,
+      brightness: brightness,
+      x: mirroredXCoordinate,
+      y: mirroredYCoordinate,
+      size: size,
+      halfSize: halfSize,
+      velocityScale: velocityScale,
+      velocityX: mirroredVelocityX,
+      velocityY: mirroredVelocityY,
+      shape: shape
+    }; // creates an object with above properties on the fly for each segment of the screen.
+  };
+  return makeKaleidoscope;
+};
+
 let circles = [];
 let blinks = [];
 let trail = {
@@ -35,13 +130,6 @@ var setup = () => {
   text('Mouse click to interact', windowWidth / 2, (windowHeight / 2) + (36 * 2));
   text('Enter to begin', windowWidth / 2, (windowHeight / 2) + (36 * 3));
   noLoop();  // stops the draw function from looping. Still calls it once, though
-                // stroke('rgb(100%,0%,10%)');
-                // line(0, 0, windowWidth, windowHeight)
-                // line((windowWidth / 2), 0, (windowWidth / 2), windowHeight)
-                // line(0, (windowHeight / 2), windowWidth, (windowHeight / 2))
-                // line(0, windowHeight, windowWidth, 0)
-                // //RED LINERS
-
 }; // setup function sets up the initial properties of our canvas
 
 var draw = () => {
@@ -89,107 +177,8 @@ var draw = () => {
   } // creating an object for trail of circles
   else if (currentGraphic === 0) {
     background(0);
-                    // stroke('rgb(100%,0%,10%)');
-                    // line(0, 0, windowWidth, windowHeight)
-                    // line((windowWidth / 2), 0, (windowWidth / 2), windowHeight)
-                    // line(0, (windowHeight / 2), windowWidth, (windowHeight / 2))
-                    // line(0, windowHeight, windowWidth, 0)
-                    // //RED LINERS
     if (mouseIsPressed) {
-      let chooseShape = (x, y, w, h, r, hS) => {
-        let randomNum = Math.floor(Math.random() * Math.floor(2));
-        if (randomNum === 0) {
-          return function (x, y, w, h, r, hS) {rect((x - hS), (y - hS), w, h, r)};
-        } else if (randomNum === 1) {
-          return function (x, y, w, h) {ellipse(x, y, w, h)};
-        }
-      } // this function randomises the shapes which are rendered in the draw function for the KS. Add more to it for further shapes.
-      // 30 SECOND LIFESPAN SHOULD BE 1800!!!!!!!!!
-      let kaleidoscopeProperties = {
-        lifespan: 30,
-        segments: []
-      };
-      let hue = map(mouseX, 0, windowWidth, 0, 255);
-      let brightness = 255;
-      let x = mouseX;
-      let y = mouseY;
-      let radius = 10;
-      let xPositionPercentage = (x / windowWidth) * 100;
-      let yPositionPercentage = (y / windowHeight) * 100;
-      let windowWidthRate = windowWidth / 100;
-      let windowHeightRate = windowHeight / 100;
-      let size = random(10, 41);
-      let halfSize = size / 2; // halfSize variable used to properly position rectangle and mirror it properly relative to the ellipse.
-      let velocityScale = 0.3;
-      let velocityX = random(-10, 10);
-      let velocityY = random(-10, 10);
-      let shape = chooseShape(x, y, size, size, radius);
-
-      for (let i = 0; i < 8; i++) {
-        let mirroredXCoordinate; 
-        let mirroredYCoordinate;
-        let mirroredVelocityX;
-        let mirroredVelocityY;
-        // this allows us to mirror the shape created in all other sections of the kaleidoscope.
-        // the inclusion of the 'size' variable in the following if/else further offsets to get exact mirror effect.
-
-        if (i === 0) {
-          mirroredXCoordinate = x;
-          mirroredYCoordinate = y;
-          mirroredVelocityX = velocityX
-          mirroredVelocityY = velocityY
-        } else if (i === 1) {
-          mirroredXCoordinate = windowWidthRate * yPositionPercentage;
-          mirroredYCoordinate = windowHeightRate * xPositionPercentage;
-          mirroredVelocityX = velocityX * -1
-          mirroredVelocityY = velocityY * -1
-        } else if (i === 2) {
-          mirroredXCoordinate = (windowWidth - x);
-          mirroredYCoordinate = y;
-          mirroredVelocityX = velocityX * -1
-          mirroredVelocityY = velocityY 
-        } else if (i === 3) {
-          mirroredXCoordinate = (windowWidth - (windowWidthRate * yPositionPercentage));
-          mirroredYCoordinate = windowHeightRate * xPositionPercentage;
-          mirroredVelocityX = velocityX 
-          mirroredVelocityY = velocityY * -1
-        } else if (i === 4) {
-          mirroredXCoordinate = (windowWidth - (windowWidthRate * yPositionPercentage));
-          mirroredYCoordinate = (windowHeight - (windowHeightRate * xPositionPercentage));
-          mirroredVelocityX = velocityX
-          mirroredVelocityY = velocityY
-        } else if (i === 5) {
-          mirroredXCoordinate = (windowWidth - x);
-          mirroredYCoordinate = (windowHeight - y);
-          mirroredVelocityX = velocityX * -1
-          mirroredVelocityY = velocityY * -1
-        } else if (i === 6) {
-          mirroredXCoordinate = x;
-          mirroredYCoordinate = (windowHeight - y);
-          mirroredVelocityX = velocityX
-          mirroredVelocityY = velocityY * -1
-        } else {
-          mirroredXCoordinate = windowWidthRate * yPositionPercentage;
-          mirroredYCoordinate = (windowHeight - (windowHeightRate * xPositionPercentage));
-          mirroredVelocityX = velocityX * -1
-          mirroredVelocityY = velocityY 
-        } // mirrors coordinates/shapes into correct positions on screen.
-
-        kaleidoscopeProperties.segments["segment" + i] = {
-          hue: hue,
-          radius: radius,
-          brightness: brightness,
-          x: mirroredXCoordinate,
-          y: mirroredYCoordinate,
-          size: size,
-          halfSize: halfSize,
-          velocityScale: velocityScale,
-          velocityX: mirroredVelocityX,
-          velocityY: mirroredVelocityY,
-          shape: shape
-        }; // creates an object with above properties on the fly for each segment of the screen.
-      }
-      kaleidoscope.push(kaleidoscopeProperties);
+      kaleidoscope.push(kaleidoscopeProperties());
     }
   }
 
@@ -233,7 +222,6 @@ var draw = () => {
       wallCollideCheck(currentSegment);
       currentSegment.x += currentSegment.velocityX * currentSegment.velocityScale;
       currentSegment.y += currentSegment.velocityY * currentSegment.velocityScale;
-      
       currentSegment.shape(currentSegment.x, currentSegment.y, currentSegment.size, currentSegment.size, currentSegment.radius, currentSegment.halfSize);
       // ellipse(currentSegment.x, currentSegment.y, currentSegment.size, currentSegment.size);
       // rect(currentSegment.x, currentSegment.y, currentSegment.size, currentSegment.size);
@@ -250,7 +238,6 @@ var keyPressed = function() {
     currentGraphic = 0;
     loop();
   }
-
   if (keyCode === SHIFT) {
     circles = [];
     blinks = [];
@@ -260,7 +247,6 @@ var keyPressed = function() {
     };
     kaleidoscope = [];
   } // Clears screen of everything.
-
   if (keyCode === TAB) {
     if (currentGraphic != 3) {
       currentGraphic++;
@@ -268,7 +254,6 @@ var keyPressed = function() {
       currentGraphic = 0;
     } // Switches between available graphics.
   }
-
   if (keyCode === 90) {
     noLoop();
   }
