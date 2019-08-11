@@ -1,15 +1,15 @@
 const kaleidoscopeProperties = () => {
-  const chooseShape = (x, y, w, h, r, hS) => {
+  const chooseShape = (x, y, w, h, r) => {
     let randomNum = Math.floor(Math.random() * Math.floor(2));
     if (randomNum === 0) {
-      return function (x, y, w, h, r, hS) {rect((x - hS), (y - hS), w, h, r)};
+      return function (x, y, w, h, r) {rect(x, y, w, h, r)};
     } else if (randomNum === 1) {
       return function (x, y, w, h) {ellipse(x, y, w, h)};
     }
   }; // this function randomises the shapes which are rendered in the draw function for the KS. Add more to it for further shapes.
 
   let makeKaleidoscope = {
-    lifespan: 500,
+    lifespan: 600,
     segments: []
   };
   let hue = map(mouseX, 0, windowWidth, 0, 255);
@@ -18,12 +18,13 @@ const kaleidoscopeProperties = () => {
   let x = mouseX;
   let y = mouseY;
   let radius = 8;
+  let degrees = 45;
   let xPositionPercentage = (x / windowWidth) * 100;
   let yPositionPercentage = (y / windowHeight) * 100;
   let windowWidthRate = windowWidth / 100;
   let windowHeightRate = windowHeight / 100;
   let size = random(10, 41);
-  let halfSize = size / 2; // halfSize variable used to properly position rectangle and mirror it properly relative to the ellipse.
+  // let halfSize = size / 2; // halfSize variable used to properly position rectangle and mirror it properly relative to the ellipse.
   let velocityScale = 0.3;
   let velocityX = random(-10, 10);
   let velocityY = random(-10, 10);
@@ -34,8 +35,8 @@ const kaleidoscopeProperties = () => {
     let mirroredYCoordinate;
     let mirroredVelocityX;
     let mirroredVelocityY;
-  // this allows us to mirror the shape created in all other sections of the kaleidoscope.
-  // the inclusion of the 'size' variable in the following if/else further offsets to get exact mirror effect.
+  // kaleidoscope sectioned into 8 segments on the screen
+  // following if/else allows us to mirror the shape created in all other sections of the kaleidoscope.
     if (i === 0) {
       mirroredXCoordinate = x;
       mirroredYCoordinate = y;
@@ -81,11 +82,12 @@ const kaleidoscopeProperties = () => {
       hue: hue,
       alpha: alpha,
       radius: radius,
+      degrees: degrees,
       brightness: brightness,
       x: mirroredXCoordinate,
       y: mirroredYCoordinate,
       size: size,
-      halfSize: halfSize,
+      //halfSize: halfSize,
       velocityScale: velocityScale,
       velocityX: mirroredVelocityX,
       velocityY: mirroredVelocityY,
@@ -102,6 +104,7 @@ let trail = {
   properties: []
 };
 let kaleidoscope = [];
+let x = 0;
 
 const wallCollideCheck = (graphic) => {
   if (graphic.x >= windowWidth || graphic.x <= 0) {
@@ -112,9 +115,6 @@ const wallCollideCheck = (graphic) => {
   }
 } // Checks to see if shapes collide with bounds and makes them 'bounce' off if they do.
 
-// LAST LITTLE FEATURE TO LOOK INTO ADDING. HAVE A NICE TRANSPARENCY EFFECT THAT GRADUALLY BRINGS THE
-// ENTIRE COLOUR INTO FOCUS, RATHER THAN A SUDDEN APPEARANCE OF THE SHAPE/GRAPHIC.
-
 let currentGraphic = null;
 
 var setup = () => {
@@ -124,7 +124,8 @@ var setup = () => {
   background(0); // black background; could also use RGB: background(0, 0, 0);
   noStroke(); // Don't draw a border on shapes  
   textSize(36); // If you want to use text()
-  // angleMode(DEGREES)
+  //angleMode(DEGREES);
+  rectMode(CENTER)
   fill(0, 0, 255);
   textAlign(CENTER);
   text('Tab to switch between graphics', windowWidth / 2, windowHeight / 2);
@@ -132,9 +133,16 @@ var setup = () => {
   text('Mouse click to interact', windowWidth / 2, (windowHeight / 2) + (36 * 2));
   text('Enter to begin', windowWidth / 2, (windowHeight / 2) + (36 * 3));
   noLoop();  // stops the draw function from looping. Still calls it once, though
+
+
 }; // setup function sets up the initial properties of our canvas
 
 var draw = () => {
+    // x += 0.04;
+    // translate(width / 2, height / 2);
+    // rotate(x);
+    // rect(0, 0, 100, 100);
+
   //following if statement switches between different graphics
   if (currentGraphic === 2) {
     background(0);
@@ -179,6 +187,11 @@ var draw = () => {
   } // creating an object for trail of circles
   else if (currentGraphic === 0) {
     background(0);
+                    // stroke('rgb(100%,0%,10%)');
+                    // line(0, 0, windowWidth, windowHeight)
+                    // line((windowWidth / 2), 0, (windowWidth / 2), windowHeight)
+                    // line(0, (windowHeight / 2), windowWidth, (windowHeight / 2))
+                    // line(0, windowHeight, windowWidth, 0)
     if (mouseIsPressed) {
       kaleidoscope.push(kaleidoscopeProperties());
     }
@@ -221,15 +234,16 @@ var draw = () => {
     for (const key in k) {
       const currentSegment = k[key];
       fill(currentSegment.hue, 255, currentSegment.brightness, currentSegment.alpha);
+      // rotate(45);
       wallCollideCheck(currentSegment);
-      if (kaleidoscope[i].lifespan <= 100) {
+      if (kaleidoscope[i].lifespan <= 150) {
         currentSegment.alpha -= 1;
-      } else if (currentSegment.alpha != 100) {
+      } else if (currentSegment.alpha != 150) {
         currentSegment.alpha += 1;
       }
       currentSegment.x += currentSegment.velocityX * currentSegment.velocityScale;
       currentSegment.y += currentSegment.velocityY * currentSegment.velocityScale;
-      currentSegment.shape(currentSegment.x, currentSegment.y, currentSegment.size, currentSegment.size, currentSegment.radius, currentSegment.halfSize);
+      currentSegment.shape(currentSegment.x, currentSegment.y, currentSegment.size, currentSegment.size, currentSegment.radius);
       // ellipse(currentSegment.x, currentSegment.y, currentSegment.size, currentSegment.size);
       // rect(currentSegment.x, currentSegment.y, currentSegment.size, currentSegment.size);    
     }
