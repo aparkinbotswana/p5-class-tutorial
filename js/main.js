@@ -14,17 +14,17 @@ const kaleidoscopeProperties = () => {
   };
   let hue = map(mouseX, 0, windowWidth, 0, 255);
   let brightness = 255;
-  let alpha = 5
-  let x = mouseX;
-  let y = mouseY;
+  let alpha = 5;
   let radius = 8;
   let degrees = 45;
+  let x = mouseX;
+  let y = mouseY;
   let xPositionPercentage = (x / windowWidth) * 100;
   let yPositionPercentage = (y / windowHeight) * 100;
   let windowWidthRate = windowWidth / 100;
   let windowHeightRate = windowHeight / 100;
   let size = random(10, 41);
-  // let halfSize = size / 2; // halfSize variable used to properly position rectangle and mirror it properly relative to the ellipse.
+  let rotation = random(1, 5);
   let velocityScale = 0.3;
   let velocityX = random(-10, 10);
   let velocityY = random(-10, 10);
@@ -76,8 +76,8 @@ const kaleidoscopeProperties = () => {
       mirroredXCoordinate = windowWidthRate * yPositionPercentage;
       mirroredYCoordinate = (windowHeight - (windowHeightRate * xPositionPercentage));
       mirroredVelocityX = velocityX * -1
-      mirroredVelocityY = velocityY 
-    } // mirrors coordinates/shapes into correct positions on screen.
+      mirroredVelocityY = velocityY
+    } // mirrors coordinates/shapes into correct positions on screen and sets correct direction.
     makeKaleidoscope.segments["segment" + i] = {
       hue: hue,
       alpha: alpha,
@@ -87,7 +87,7 @@ const kaleidoscopeProperties = () => {
       x: mirroredXCoordinate,
       y: mirroredYCoordinate,
       size: size,
-      //halfSize: halfSize,
+      rotation: rotation,
       velocityScale: velocityScale,
       velocityX: mirroredVelocityX,
       velocityY: mirroredVelocityY,
@@ -104,7 +104,6 @@ let trail = {
   properties: []
 };
 let kaleidoscope = [];
-let x = 0;
 
 const wallCollideCheck = (graphic) => {
   if (graphic.x >= windowWidth || graphic.x <= 0) {
@@ -115,29 +114,27 @@ const wallCollideCheck = (graphic) => {
   }
 } // Checks to see if shapes collide with bounds and makes them 'bounce' off if they do.
 
-let currentGraphic = null;
+let currentGraphic = 0;
 
-var setup = () => {
+var setup = function() {
 
   createCanvas(windowWidth, windowHeight); // window.innerWidth
   colorMode(HSB, 255); // Use Hue Saturation Brightness, with a range of 0-255 for each
   background(0); // black background; could also use RGB: background(0, 0, 0);
   noStroke(); // Don't draw a border on shapes  
   textSize(36); // If you want to use text()
-  //angleMode(DEGREES);
+  angleMode(DEGREES);
   rectMode(CENTER)
   fill(0, 0, 255);
-  textAlign(CENTER);
-  text('Tab to switch between graphics', windowWidth / 2, windowHeight / 2);
-  text('Shift to clear the screen', windowWidth / 2, (windowHeight / 2) + (36 * 1));
-  text('Mouse click to interact', windowWidth / 2, (windowHeight / 2) + (36 * 2));
-  text('Enter to begin', windowWidth / 2, (windowHeight / 2) + (36 * 3));
-  noLoop();  // stops the draw function from looping. Still calls it once, though
-
-
+  // textAlign(CENTER);
+  // text('Tab to switch between graphics', windowWidth / 2, windowHeight / 2);
+  // text('Shift to clear the screen', windowWidth / 2, (windowHeight / 2) + (36 * 1));
+  // text('Mouse click to interact', windowWidth / 2, (windowHeight / 2) + (36 * 2));
+  // text('Enter to begin', windowWidth / 2, (windowHeight / 2) + (36 * 3));
+  // noLoop();  // stops the draw function from looping. Still calls it once, though
 }; // setup function sets up the initial properties of our canvas
 
-var draw = () => {
+var draw = function() {
     // x += 0.04;
     // translate(width / 2, height / 2);
     // rotate(x);
@@ -187,6 +184,10 @@ var draw = () => {
   } // creating an object for trail of circles
   else if (currentGraphic === 0) {
     background(0);
+        // translate(width / 2, height / 2);
+        //rect(50, 50, 50, 50)
+        // rotate(frameCount*4);
+
                     // stroke('rgb(100%,0%,10%)');
                     // line(0, 0, windowWidth, windowHeight)
                     // line((windowWidth / 2), 0, (windowWidth / 2), windowHeight)
@@ -231,6 +232,12 @@ var draw = () => {
   
   for (let i = 0; i < kaleidoscope.length; i++) {
     const k = kaleidoscope[i].segments;
+
+
+          let translateOffsetX;
+          let translateOffsetY;
+
+
     for (const key in k) {
       const currentSegment = k[key];
       fill(currentSegment.hue, 255, currentSegment.brightness, currentSegment.alpha);
@@ -241,12 +248,27 @@ var draw = () => {
       } else if (currentSegment.alpha != 150) {
         currentSegment.alpha += 1;
       }
+            if (key != 'segment0') {
+              translateOffsetX = currentSegment.x;
+              translateOffsetY = currentSegment.y;
+            } else {
+              translateOffsetX = 0;
+              translateOffsetY = 0;
+            }
+
+      currentSegment.rotation += 0.003;
       currentSegment.x += currentSegment.velocityX * currentSegment.velocityScale;
       currentSegment.y += currentSegment.velocityY * currentSegment.velocityScale;
+      // currentSegment.shape(10, 10, currentSegment.size, currentSegment.size, currentSegment.radius);
       currentSegment.shape(currentSegment.x, currentSegment.y, currentSegment.size, currentSegment.size, currentSegment.radius);
       // ellipse(currentSegment.x, currentSegment.y, currentSegment.size, currentSegment.size);
-      // rect(currentSegment.x, currentSegment.y, currentSegment.size, currentSegment.size);    
+      // rect(currentSegment.x, currentSegment.y, currentSegment.size, currentSegment.size);
+            // console.log(translateOffsetX);
+            // console.log(k[key]);
+      // translate(currentSegment.x - translateOffsetX, currentSegment.y - translateOffsetY);
+      // rotate(currentSegment.rotation);
     }
+    // noLoop()
     kaleidoscope[i].lifespan -= 1
     if (kaleidoscope[i].lifespan === 0) {
       kaleidoscope.shift();
@@ -255,10 +277,6 @@ var draw = () => {
 } //draw function called at every frame.
 
 var keyPressed = function() {
-  if (keyCode === ENTER) {
-    currentGraphic = 0;
-    loop();
-  }
   if (keyCode === SHIFT) {
     circles = [];
     blinks = [];
